@@ -145,8 +145,7 @@ CoveragePlugin.prototype.saveLogs = function() {
 
 CoveragePlugin.prototype.setup = function() {
 	var self = this;
-  self.config.outdir = 'TestResults/integrationtest/codecoverage';
-  
+
   browser.manage().logs().getAvailableLogTypes().then(function(res) {
     self.browserLogAvailable = res.indexOf('browser') > -1;
   });
@@ -227,6 +226,7 @@ CoveragePlugin.prototype.postTest = function() {
 	return deferred.promise;
 };
 
+
 function mkdirSyncRecursive(directory) {
   var path = directory.replace(/\/$/, '').split('/');
   for (var i = 1; i <= path.length; i++) {
@@ -241,21 +241,21 @@ CoveragePlugin.prototype.outputResults = function(done) {
 
 
 	try {
-    mkdirSyncRecursive('TestResults/integrationtest/codecoverage');
+    mkdirSyncRecursive(self.config.outdir);
   } catch (e) {
     if (e.code != 'EEXIST') throw e;
   }
 
   // build coverage file
-  var outfileCoverage = path.join('TestResults/integrationtest/codecoverage', 'coverage.json');
+  var outfileCoverage = path.join(self.config.outdir, 'coverage.json');
   fs.writeFileSync(outfileCoverage, JSON.stringify(self.DOMelements));
 
   // save config setting
-  var outfileConfig = path.join('TestResults/integrationtest/codecoverage', 'config.json');
+  var outfileConfig = path.join(self.config.outdir, 'config.json');
   fs.writeFileSync(outfileConfig, JSON.stringify(self.config.elements));
 
   // copy report folder
-  wrench.copyDirRecursive(__dirname + '/report', 'TestResults/integrationtest/codecoverage' + '/report', {forceDelete: true}, done);
+  wrench.copyDirRecursive(__dirname + '/report', self.config.outdir + '/report', {forceDelete: true}, done);
 };
 
 CoveragePlugin.prototype.postResults = function(config) {
