@@ -119,8 +119,11 @@ CoveragePlugin.prototype.parseLogs = function() {
 	    });
 
 	    warnings.forEach(function(elem) {
-	      var m = JSON.parse(elem.message);
-	      if (m.message.hasOwnProperty('parameters')) {
+        var m = null;
+        try {
+          m = JSON.parse(elem.message);
+        } catch(err) {}
+	      if (m && m.message.hasOwnProperty('parameters')) {
 
 	        var p = m.message.parameters;
 
